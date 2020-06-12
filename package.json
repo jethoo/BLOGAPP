@@ -1,0 +1,25 @@
+{
+  "name": "comp-2068-lesson-03-06",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jethoo/lesson-3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jethoo/lesson-3/issues"
+  },
+  "homepage": "https://github.com/jethoo/lesson-3#readme",
+  "dependencies": {
+    "ejs": "^3.1.3",
+    "express": "^4.17.1"
+  }
+}
