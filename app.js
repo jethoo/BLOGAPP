@@ -19,38 +19,83 @@ require('dotenv').config();
 //require path for view
 const path = require('path');
 
-//Set our views directory
-app.set('views',path.join(__dirname, 'views'))
-app.set('view engine', 'ejs');
-
-//use is a middleware , which helps to make static resources such as
-//assets files, css files into dynamic files, which means 
-//accessible from the server
-app.use('/css', express.static('assets/css'));
-app.use('/javascript', express.static('assets/javascript'));
-app.use('/images', express.static('assets/images'));
-
 //Mongo access
-const mongoose = require('mongoose'); 
+const mongoose = require('mongoose');
 mongoose.connect(process.env.DB_URI, {
     auth: {
         user: process.env.DB_USER,
         password: process.env.DB_PASS
     },
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 }).catch(err => console.error(`Error: ${err}`));
 
 // Implement Body Parser
+//With the help of body parser, post requests to model is converted to json format
+//therefore without bodyparser installed and implemented, we cannot exchange information with the database model
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+//Setup our session
+//passport should be required before session
+const passport = require('passport');
+const session = require('express-session');
+app.use(session({
+    secret: 'any salty secret here',
+    resave: true,
+    saveUninitialized: false
+}));
+
+//Setting up Passport:
+app.use(passport.initialize());
+app.use(passport.session());
+const User = require(`./models/user`);
+passport.use(User.createStrategy());
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+
+//Set our views directory
+app.set('views',path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+//use is a middleware , which helps to make static resources such as
+//assets files, css files into dynamic files, which means
+//accessible from the server
+app.use('/css', express.static('assets/css'));
+app.use('/javascript', express.static('assets/javascript'));
+app.use('/images', express.static('assets/images'));
+
+
+//setup flash notification
+const flash = require('connect-flash');
+app.use(flash());
+app.use('/',(req,res,next) => {
+
+    //Setting default locals
+    res.locals.pageTitle = "Untitled";
+    //storing locally, "locals.flash" is going to be the local variable that will store response from flash
+    res.locals.flash = req.flash();
+    console.log(req.session.formData);
+    res.locals.formData = req.session.formData || {};
+    //after session formData is assigned to res.locals.formData
+    //we have clear the res.locals.formData as follows
+    req.session.formData = {};
+
+    //Authentication helper to help restrict views depending upon authorized and unauthorized user
+    res.locals.authorized = req.isAuthenticated();
+    if (res.locals.authorized) res.locals.email = req.session.passport.user;
+    next();
+});
+
+
 //Our routes
 const routes = require('./routes.js');
+const { appendFileSync } = require('fs');
 app.use('/', routes);
 
 //Start our server
-app.listen(process.env.PORT || 3000, port => console.log(`Listening on port ${port}`));
-
-
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Listening on port ${port}`));

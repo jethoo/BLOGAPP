@@ -1,0 +1,13 @@
+ <% 
+    //flash, returns an object, therefore we are destructing the contents of flash object
+    //into alertType which gives keys, and messages for values
+    //then we will iterate over the messages array to give us the flash message
+  if (flash) { %>
+        <% for (let [alertType, messages] of Object.entries(flash)) { %>
+          <div class="alert alert-<%= alertType %>">
+            <% for (let message of messages) { %>
+              <%= message %><br>
+            <% } %>
+          </div>
+        <% } %>
+      <% } %>

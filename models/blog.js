@@ -2,6 +2,13 @@ const mongoose = require('mongoose');
 
 //create blog schema
 const BlogSchema = new mongoose.Schema({
+     //establishing connection between user and blog models
+     user: {
+        type: mongoose.Schema.Types.ObjectId,
+        //mongoose automatically establishes the connection
+        ref: 'User',
+        required: true
+    },
     title: {
         type: String,
         required: true //This must exist    
@@ -34,6 +41,14 @@ BlogSchema.query.published = function (){
   })
 };
 
+//creating another short summary function of BlogSchema, for just accessing the content with 250 characters 
+BlogSchema.virtual('synopsis')
+   .get(function () {
+        const post = this.content;
+        return post
+        .replace(/(<([^>]+)>)/ig,"")
+        .substring(0, 250);
+   });
 
 //'Blog' is the name of the model. We can name it whatever we want
 //Secondly, we are exporting the BlogSchema of this model

@@ -1,0 +1,12 @@
+<%- include ('../partials/header') %>
+    <div class="container my-5">
+        <header>
+            <h1>Images</h1>
+        </header>
+        <hr>
+
+        <% for (let image of images) { %>
+            <img src="data:<%= image.mimeType %>;base64,<%=image.data%>" alt="<%= image.filename %>" class="img-thumbnail img-fluid">
+        <% } %>
+    </div>
+<%- include ('../partials/footer') %>

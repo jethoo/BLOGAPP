@@ -24,3 +24,23 @@ body {
     font-size: 5rem;
     text-align: center;
 }
+
+.form-inline{
+    display: inline-block;
+    margin:0;
+    padding:0;
+}
+
+button.delete{
+    border:none;
+    background: none;
+    color: #007bff;
+}
+
+button.delete:hover{
+    color:#0056b3
+}
+
+a{
+    text-decoration: none !important;
+}
