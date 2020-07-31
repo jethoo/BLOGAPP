@@ -9,14 +9,11 @@ exports.index = async (req,res) => {
         .find()
         .populate('user')
         .sort({updatedAt: 'desc'});
-        console.log(blogs);
-        res.render(`${viewPath}/index`, {
-            pageTitle: 'Archive',
-            blogs: blogs
-        });
+        
+        res.status(200).json(blogs);
+        
     } catch (error){
-        req.flash('danger', `There was an error displaying the archive: ${error}`);
-        res.redirect('/');
+        res.status(400).json({message: 'There was an error fetching the blogs', error});
     }
 };
 
@@ -25,15 +22,9 @@ exports.show = async (req,res) => {
         const blog = await Blog.findById(req.params.id)
            .populate('user'); //name of the model , 'user' is passed in populate
         //need to populate the user , to check the user is part of it
-        console.log(blog);
-        res.render(`${viewPath}/show`, {
-            pageTitle: blog.title,
-            blog: blog
-        });
+       res.status(200).json(blog);
     } catch (error){
-        req.flash('danger', `There was an error displaying this 
-        blog: ${error}`);
-        res.redirect('/');
+       res.status(400).json({message: "There was an error fetching the blog"});
     }
 };
 
@@ -45,13 +36,11 @@ exports.new = (req,res) => {
 
 //async, await are the modern way to handle callbacks
     exports.create = async (req,res) => {
-        console.log(`Blog body: ${JSON.stringify(req.body, null, 2)}`);
-        
         //90 % of time I/O are asynchronous
         try {
             //3 steps for connecting logged in user to blog he/she is writing
            
-            console.log(req.session.passport); //output would be the email of the user logged in
+            //output would be the email of the user logged in
             //Step 1. assigning user's value to email variable , also called destructing
             const { user:email } = req.session.passport;
             //Step 2. Getting all the details of the logged in user, by using the email from Step 1 and calling the
@@ -61,13 +50,10 @@ exports.new = (req,res) => {
             //which will make sure that the logged in user, created the post,!! awesome
             const blog = await Blog.create({user: user._id, ...req.body});
 
-            req.flash('success', 'Blog created successfully');
-            res.redirect(`/blogs/${blog.id}`);
+            res.status(200).json(blog);
+
         } catch(error){
-            req.flash('danger', `There was an error creating this blog: ${error}`);
-            req.session.formData = req.body;
-            res.redirect('/blogs/new');
-            
+            res.status(400).json({message: "There was an error creating the blog post", error});
         }
     };
 
@@ -117,13 +103,10 @@ exports.update = async (req,res) => {
 exports.delete = async (req,res) => {
     try{
         await Blog.deleteOne({_id: req.body.id});
-        req.flash('success', 'The blog was deleted successfully');
-        res.redirect(`/blogs`);
+        res.status(200).json({message: "Yay."});
     }
     catch{
-        req.flash('danger', `There was an error deleting this 
-        blog: ${error}`);
-        res.redirect(`/blogs`);
+        res.status(400).json({message: "There was an error deleting the blog"});
     }
 };
 

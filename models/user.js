@@ -36,7 +36,12 @@ const UserSchema = new mongoose.Schema({
         ]
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    toJSON: {
+        getters:true
+        //toJSON getters:true , will help to carry the virtual functions to the front end , in our case to React
+        //With doing that, we won't be able to access virtual functions below, such as emailConfirmation, fullname etc. from the front end
+    }
 });
 
 //the virtual logic below, helps to set and get values

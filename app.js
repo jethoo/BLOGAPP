@@ -56,7 +56,6 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
 //Set our views directory
 app.set('views',path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -94,8 +93,29 @@ app.use('/',(req,res,next) => {
 //Our routes
 const routes = require('./routes.js');
 const { appendFileSync } = require('fs');
-app.use('/', routes);
+app.use('/api', routes);
+
+app.get('/test', (req,res) => {
+    res.status(200).json({
+        message: 'Hello World'
+    });
+});
+
+//create new middleware for directing the traffic from front end to backend
+//__dirname , means the current directory we are in
+const clientRoot = path.join(__dirname, '/client/build');
+app.use((req,res,next)=> {
+    if (req.method === 'GET' && req.accepts('html') && !req.is('json') && !req.path.includes('.')){
+        //clientRoot is the variable
+        res.sendFile('index.html', { clientRoot });
+    } else next(); 
+});
 
 //Start our server
-const port = process.env.PORT || 3000;
+//Now in development, we are sending and receiving traffic between front and back end from port 4000
+const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`Listening on port ${port}`));
+
+
+//NOTE: For adding authentication in the front end side, we are going to use JWT Tokens
+//Step 1: Install , npm install passport-jwt and also install, npm install jsonwebtoken
