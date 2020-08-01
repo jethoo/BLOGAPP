@@ -12,17 +12,19 @@ const Edit = function (props){
     const [inputs, setInputs] = useState({
         title: '',
         content: '',
-        status: 'DRAFT'
+        status: ''
     });
 
     const [redirect, setRedirect ] = useState(false);
     
     useEffect(() => {
         (async () => {
-            const blogResp = await Axios.get(`/blogs/${id}`);
+            const blogResp = await Axios.get(`/api/blogs/${id}`);
             if(blogResp.status === 200 ) setInputs(blogResp.data);
         })();
     },[]);
+
+
 
     const handleSubmit = async event => {
         event.preventDefault();
@@ -96,10 +98,10 @@ const Edit = function (props){
                             as="select"
                             name="status"
                             onChange={handleInputChange}
-                            defaultValue={inputs.status || 'DRAFT'}
+                            defaultValue={inputs.status}
                         >
                             <option value="DRAFT">draft</option>
-                            <option value="PUBLISH">published</option>
+                            <option value="PUBLISHED">published</option>
                         </Form.Control>
                     </Form.Group>
 

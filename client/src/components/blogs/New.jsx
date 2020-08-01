@@ -9,7 +9,7 @@ const New = function (){
     const [inputs, setInputs] = useState({
         title: '',
         content: '',
-        status: 'DRAFT'
+        status: ''
     });
 
     const [redirect, setRedirect ] = useState(false);
@@ -25,10 +25,6 @@ const New = function (){
                     type: toast.TYPE.SUCCESS
                 });
                 setRedirect(true);
-            } else {
-                toast("There was an issue creating the blog", {
-                    type: toast.TYPE.ERROR
-                });
             }
         } catch(error){
             toast("There was an issue creating the blog", {
@@ -86,10 +82,10 @@ const New = function (){
                             as="select"
                             name="status"
                             onChange={handleInputChange}
-                            defaultValue={inputs.status || 'DRAFT'}
+                            defaultValue={inputs.status}
                         >
                             <option value="DRAFT">draft</option>
-                            <option value="PUBLISH">published</option>
+                            <option value="PUBLISHED">published</option>
                         </Form.Control>
                     </Form.Group>
 

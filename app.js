@@ -103,14 +103,10 @@ app.get('/test', (req,res) => {
 
 //create new middleware for directing the traffic from front end to backend
 //__dirname , means the current directory we are in
-const clientRoot = path.join(__dirname, '/client/build');
-app.use((req,res,next)=> {
-    if (req.method === 'GET' && req.accepts('html') && !req.is('json') && !req.path.includes('.')){
-        //clientRoot is the variable
-        res.sendFile('index.html', { clientRoot });
-    } else next(); 
+app.use(express.static(path.join(__dirname, 'client/build')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
-
 //Start our server
 //Now in development, we are sending and receiving traffic between front and back end from port 4000
 const port = process.env.PORT || 4000;

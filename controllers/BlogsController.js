@@ -50,7 +50,7 @@ exports.new = (req,res) => {
             //which will make sure that the logged in user, created the post,!! awesome
             const blog = await Blog.create({user: user._id, ...req.body});
 
-            res.status(200).json(blog);
+            res.status(200).json({message:"The blog was successfully created"});
 
         } catch(error){
             res.status(400).json({message: "There was an error creating the blog post", error});
@@ -90,13 +90,10 @@ exports.update = async (req,res) => {
         //await Blog.updateOne({_id: attributes.id}, attributes);
         await Blog.findByIdAndUpdate(attributes.id, attributes);
 
-        req.flash('success', 'The blog was updated successfully');
-        res.redirect(`/blogs/${req.body.id}`);
+        res.status(200).json({message: "The blog has been updated successfully."});
     }
     catch(error){
-        req.flash('danger', `There was an error updating this 
-        blog: ${error}`);
-        res.redirect(`/blogs/${req.body.id}/edit`);
+        res.status(400).json({message: "There was an error updating the blog"});
     }
 };
 
