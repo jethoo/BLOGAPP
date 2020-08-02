@@ -9,7 +9,7 @@ const New = function (){
     const [inputs, setInputs] = useState({
         title: '',
         content: '',
-        status: ''
+        status: 'DRAFT'
     });
 
     const [redirect, setRedirect ] = useState(false);
@@ -82,7 +82,7 @@ const New = function (){
                             as="select"
                             name="status"
                             onChange={handleInputChange}
-                            defaultValue={inputs.status}
+                            defaultValue={inputs.status || 'DRAFT'}
                         >
                             <option value="DRAFT">draft</option>
                             <option value="PUBLISHED">published</option>

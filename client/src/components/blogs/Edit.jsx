@@ -12,7 +12,7 @@ const Edit = function (props){
     const [inputs, setInputs] = useState({
         title: '',
         content: '',
-        status: ''
+        status: 'DRAFT'
     });
 
     const [redirect, setRedirect ] = useState(false);
